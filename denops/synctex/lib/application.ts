@@ -40,8 +40,15 @@ export default class Application {
     }
   }
 
+  public async forwardSearch() {
+    // const bufname = await this.denops.call("bufname") as string;
+    const bufname = await this.denops.call("expand", "%:p") as string;
+    const cursorLine = (await this.denops.call("getpos", ".") as number[])[1];
+    this.server.request({ file: bufname, line: cursorLine });
+  }
+
   private attachListener() {
-    this.server.Listen(async (request: Request) => {
+    this.server.setListener(async (request: Request) => {
       if (request.method == "GET") return null;
       if (request.method == "PUT") {
         const data = await request.text();

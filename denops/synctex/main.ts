@@ -13,5 +13,8 @@ export function main(denops: Denops): void {
     async toggle(): Promise<void> {
       await app.toggleServerState();
     },
+    async forwardSearch(): Promise<void> {
+      await app.forwardSearch();
+    },
   };
 }

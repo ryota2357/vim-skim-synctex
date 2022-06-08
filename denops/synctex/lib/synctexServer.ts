@@ -37,11 +37,11 @@ export default class SynctexSever {
     return `{"name":"vim-synctex-skim","hostname":${this.hostname},"port":${this.port},}\n`;
   }
 
-  public Listen(func: (request: Request) => ObserverResponseType) {
+  public setListener(func: (request: Request) => ObserverResponseType) {
     this.observer = func;
   }
 
-  public Request(request: ForwardSearchRequest) {
+  public request(request: ForwardSearchRequest) {
     // TODO: impliment
     console.log(request);
   }
