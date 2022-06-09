@@ -41,10 +41,12 @@ export default class Application {
   }
 
   public async forwardSearch() {
-    // const bufname = await this.denops.call("bufname") as string;
     const bufname = await this.denops.call("expand", "%:p") as string;
     const cursorLine = (await this.denops.call("getpos", ".") as number[])[1];
-    this.server.request({ file: bufname, line: cursorLine });
+    this.server.request(this.denops, {
+      file: bufname,
+      line: cursorLine,
+    });
   }
 
   private attachListener() {

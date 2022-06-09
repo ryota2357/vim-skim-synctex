@@ -1,3 +1,5 @@
+import { Denops } from "./deps.ts";
+
 export default class SynctexSever {
   private listener?: Deno.Listener;
   private hostname?: string;
@@ -15,6 +17,22 @@ export default class SynctexSever {
     for await (const conn of this.listener) {
       this.handleHttp(conn);
     }
+  }
+
+  public setListener(func: (request: Request) => ObserverResponseType) {
+    this.observer = func;
+  }
+
+  public close() {
+    if (this.listener != undefined) {
+      this.listener.close();
+      this.listener = undefined;
+    }
+    this.observer = undefined;
+  }
+
+  public get isRunning(): boolean {
+    return this.listener != undefined;
   }
 
   private async handleHttp(conn: Deno.Conn) {
@@ -37,25 +55,28 @@ export default class SynctexSever {
     return `{"name":"vim-synctex-skim","hostname":${this.hostname},"port":${this.port},}\n`;
   }
 
-  public setListener(func: (request: Request) => ObserverResponseType) {
-    this.observer = func;
+  private createScript(texFile: string, pdfFile: string, line: number): string {
+    return `exec osascript << EOF
+set texPath to "${texFile}"
+set pdfPath to "${pdfFile}"
+tell application "Skim"
+  open POSIX file pdfPath
+  go document 1 to TeX line ${line} from POSIX file texPath with showing reading bar
+  activate
+end tell
+EOF`;
   }
 
-  public request(request: ForwardSearchRequest) {
+  public async request(denops: Denops, request: ForwardSearchRequest) {
     // TODO: impliment
+    const script = this.createScript(
+      request.file,
+      request.file.replace(".tex", ".pdf"),
+      request.line,
+    );
     console.log(request);
-  }
-
-  public close() {
-    if (this.listener != undefined) {
-      this.listener.close();
-      this.listener = undefined;
-    }
-    this.observer = undefined;
-  }
-
-  public get isRunning(): boolean {
-    return this.listener != undefined;
+    const ret = await denops.call("system", ["sh", "-c", script]) as string;
+    console.log(ret);
   }
 }
 
@@ -64,4 +85,5 @@ type ObserverResponseType = Promise<string | null | undefined>;
 interface ForwardSearchRequest {
   file: string;
   line: number;
+  readingBar?: boolean;
 }
