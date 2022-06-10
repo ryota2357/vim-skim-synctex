@@ -13,9 +13,9 @@ export default class Application {
   public async startServer(): Promise<void> {
     if (this.server.isRunning) {
       this.server.close();
-      await this.denops.cmd(`echo "synctex restart"`);
+      await this.echo("synctex restart");
     } else {
-      await this.denops.cmd(`echo "synctex start"`);
+      await this.echo("synctex start");
     }
     this.attachListener();
     this.server.serve();
@@ -23,26 +23,26 @@ export default class Application {
 
   public async closeServer(): Promise<void> {
     if (this.server.isRunning == false) {
-      await this.denops.cmd(`echo "synctex is already stopped"`);
+      await this.echo("synctex is already stopped");
     } else {
       this.server.close();
-      await this.denops.cmd(`echo "synctex stop"`);
+      await this.echo("synctex stop");
     }
   }
 
   public async toggleServerState(): Promise<void> {
     if (this.server.isRunning) {
       this.server.close();
-      await this.denops.cmd(`echo "server stopped"`);
+      await this.echo("server stopped");
     } else {
       this.server.serve();
-      await this.denops.cmd(`echo "server started"`);
+      await this.echo("server started");
     }
   }
 
   public async forwardSearch() {
-    const bufname = await this.denops.call("expand", "%:p") as string;
-    const cursorLine = (await this.denops.call("getpos", ".") as number[])[1];
+    const bufname = await this.call<string>("expand", "%:p");
+    const cursorLine = (await this.call<number[]>("getpos", "."))[1];
     this.server.request(this.denops, {
       file: bufname,
       line: cursorLine,
@@ -66,5 +66,13 @@ export default class Application {
     await this.denops.cmd(`echo "on put"`);
     console.log(line);
     await this.denops.call("cursor", line, 2);
+  }
+
+  private async echo(message: string): Promise<void> {
+    await this.denops.cmd(`echo ${message}`);
+  }
+
+  private async call<T>(fn: string, ...args: unknown[]): Promise<T> {
+    return await this.denops.call(fn, args) as T;
   }
 }
