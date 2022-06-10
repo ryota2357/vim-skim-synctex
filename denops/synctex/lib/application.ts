@@ -13,30 +13,32 @@ export default class Application {
   public async startServer(): Promise<void> {
     if (this.server.isRunning) {
       this.server.close();
+      this.attachListener();
+      this.server.serve();
       await this.echo("synctex restart");
     } else {
+      this.attachListener();
+      this.server.serve();
       await this.echo("synctex start");
     }
-    this.attachListener();
-    this.server.serve();
   }
 
   public async closeServer(): Promise<void> {
-    if (this.server.isRunning == false) {
-      await this.echo("synctex is already stopped");
-    } else {
+    if (this.server.isRunning) {
       this.server.close();
       await this.echo("synctex stop");
+    } else {
+      await this.echo("synctex is already stopped");
     }
   }
 
   public async toggleServerState(): Promise<void> {
     if (this.server.isRunning) {
       this.server.close();
-      await this.echo("server stopped");
+      await this.echo("synctex stop");
     } else {
       this.server.serve();
-      await this.echo("server started");
+      await this.echo("synctex start");
     }
   }
 
@@ -63,9 +65,9 @@ export default class Application {
 
   private async setCursor(data: string): Promise<void> {
     const line = parseInt(data.split(" ")[0]);
-    await this.denops.cmd(`echo "on put"`);
+    await this.echo(`echo "on put"`);
     console.log(line);
-    await this.denops.call("cursor", line, 2);
+    await this.call("cursor", line, 2);
   }
 
   private async echo(message: string): Promise<void> {
@@ -73,6 +75,6 @@ export default class Application {
   }
 
   private async call<T>(fn: string, ...args: unknown[]): Promise<T> {
-    return await this.denops.call(fn, args) as T;
+    return await this.denops.call(fn, ...args) as T;
   }
 }
