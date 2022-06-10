@@ -51,24 +51,7 @@ export default class SynctexSever {
     }
   }
 
-  private currentStatusJson(): string {
-    return `{"name":"vim-synctex-skim","hostname":${this.hostname},"port":${this.port},}\n`;
-  }
-
-  private createScript(texFile: string, pdfFile: string, line: number): string {
-    return `exec osascript << EOF
-set texPath to "${texFile}"
-set pdfPath to "${pdfFile}"
-tell application "Skim"
-  open POSIX file pdfPath
-  go document 1 to TeX line ${line} from POSIX file texPath with showing reading bar
-  activate
-end tell
-EOF`;
-  }
-
   public async request(denops: Denops, request: ForwardSearchRequest) {
-    // TODO: impliment
     const script = this.createScript(
       request.file,
       request.file.replace(".tex", ".pdf"),
@@ -77,6 +60,22 @@ EOF`;
     console.log(request);
     const ret = await denops.call("system", ["sh", "-c", script]) as string;
     console.log(ret);
+  }
+
+  private currentStatusJson(): string {
+    return `{"name":"vim-synctex-skim","hostname":${this.hostname},"port":${this.port},}\n`;
+  }
+
+  private createScript(texFile: string, pdfFile: string, line: number): string {
+    return [
+      `osascript -l JavaScript -e '`,
+      `var app = Application("Skim");`,
+      `if(app.exists()) {`,
+      `  app.activate();`,
+      `  app.open("${pdfFile}");`,
+      `  app.document.go({to: ${line}, from: "${texFile}", showingReadingBar: true});`,
+      `}'`,
+    ].join(" ");
   }
 }
 
