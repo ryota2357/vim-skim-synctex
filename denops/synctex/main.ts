@@ -10,9 +10,6 @@ export function main(denops: Denops): void {
     async stop(): Promise<void> {
       await app.closeServer();
     },
-    async toggle(): Promise<void> {
-      await app.toggleServerState();
-    },
     async forwardSearch(): Promise<void> {
       await app.forwardSearch();
     },

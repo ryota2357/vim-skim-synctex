@@ -32,16 +32,6 @@ export default class Application {
     }
   }
 
-  public async toggleServerState(): Promise<void> {
-    if (this.server.isRunning) {
-      this.server.close();
-      await this.echo("synctex stop");
-    } else {
-      this.server.serve();
-      await this.echo("synctex start");
-    }
-  }
-
   public async forwardSearch() {
     const bufname = await this.call<string>("expand", "%:p");
     const cursorLine = (await this.call<number[]>("getpos", "."))[1];
