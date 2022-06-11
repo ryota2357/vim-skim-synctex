@@ -12,7 +12,6 @@ endfunction
 
 
 function! synctex#option(key, value) abort
-  echomsg a:key
   if a:key ==# 'pdfFile'
     if s:is_running()
       call denops#notify('option', [a:method, denops#callback#register(a:value)])
