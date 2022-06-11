@@ -4,7 +4,7 @@ export default class SynctexSever {
   private listener?: Deno.Listener;
   private hostname?: string;
   private port?: number;
-  private observer?: ((request: Request) => ObserverResponseType);
+  private observer?: (request: Request) => ObserverResponseType;
 
   public async serve(hostname = "localhost", port = 8080): Promise<void> {
     if (this.listener != undefined) {
@@ -52,12 +52,15 @@ export default class SynctexSever {
   }
 
   public async request(denops: Denops, request: ForwardSearchRequest) {
-    const script = this.createScript(
-      request.file,
-      request.file.replace(".tex", ".pdf"),
-      request.line,
-    );
-    console.log(request);
+    const script = [
+      `osascript -l JavaScript -e '`,
+      `var app = Application("Skim");`,
+      `if(app.exists()) {`,
+      `  app.activate();`,
+      `  app.open("${request.pdfFile}");`,
+      `  app.document.go({to: ${request.line}, from: "${request.texFile}", showingReadingBar: ${request.readingBar}});`,
+      `}'`,
+    ].join(" ");
     const ret = await denops.call("system", ["sh", "-c", script]) as string;
     console.log(ret);
   }
@@ -65,24 +68,13 @@ export default class SynctexSever {
   private currentStatusJson(): string {
     return `{"name":"vim-synctex-skim","hostname":${this.hostname},"port":${this.port},}\n`;
   }
-
-  private createScript(texFile: string, pdfFile: string, line: number): string {
-    return [
-      `osascript -l JavaScript -e '`,
-      `var app = Application("Skim");`,
-      `if(app.exists()) {`,
-      `  app.activate();`,
-      `  app.open("${pdfFile}");`,
-      `  app.document.go({to: ${line}, from: "${texFile}", showingReadingBar: true});`,
-      `}'`,
-    ].join(" ");
-  }
 }
 
 type ObserverResponseType = Promise<string | null | undefined>;
 
 interface ForwardSearchRequest {
-  file: string;
+  pdfFile: string;
+  texFile: string;
   line: number;
   readingBar?: boolean;
 }

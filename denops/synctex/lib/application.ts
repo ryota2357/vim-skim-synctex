@@ -4,6 +4,8 @@ import SynctexServer from "./synctexServer.ts";
 export default class Application {
   private denops: Denops;
   private server: SynctexServer;
+  private t2pFuncId?: string;
+  private readingBar = false;
 
   constructor(denops: Denops) {
     this.denops = denops;
@@ -33,12 +35,26 @@ export default class Application {
   }
 
   public async forwardSearch() {
+    if (this.server.isRunning == false) {
+      await this.echo("synctex is not running");
+      return;
+    }
     const bufname = await this.call<string>("expand", "%:p");
     const cursorLine = (await this.call<number[]>("getpos", "."))[1];
     this.server.request(this.denops, {
-      file: bufname,
+      texFile: bufname,
+      pdfFile: await this.createPdfPath(bufname),
       line: cursorLine,
+      readingBar: this.readingBar,
     });
+  }
+
+  public set tex2pdfFunctionId(id: string) {
+    this.t2pFuncId = id;
+  }
+
+  public set useReadingBar(value: boolean) {
+    this.readingBar = value;
   }
 
   private attachListener() {
@@ -55,13 +71,19 @@ export default class Application {
 
   private async setCursor(data: string): Promise<void> {
     const line = parseInt(data.split(" ")[0]);
-    await this.echo(`echo "on put"`);
+    await this.echo("on put");
     console.log(line);
     await this.call("cursor", line, 2);
   }
 
+  private async createPdfPath(texPath: string): Promise<string> {
+    return this.t2pFuncId
+      ? await this.call<string>("denops#callback#call", this.t2pFuncId, texPath)
+      : texPath.replace(".tex", ".pdf");
+  }
+
   private async echo(message: string): Promise<void> {
-    await this.denops.cmd(`echo ${message}`);
+    await this.denops.cmd(`echo "${message}"`);
   }
 
   private async call<T>(fn: string, ...args: unknown[]): Promise<T> {
