@@ -6,7 +6,7 @@ export default class SynctexSever {
   private port?: number;
   private observer?: (request: Request) => ObserverResponseType;
 
-  public async serve(hostname = "localhost", port = 8080): Promise<void> {
+  public async serve(hostname: string, port: number): Promise<void> {
     if (this.listener != undefined) {
       this.listener.close();
       this.listener = undefined;

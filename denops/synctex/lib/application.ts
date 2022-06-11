@@ -6,6 +6,8 @@ export default class Application {
   private server: SynctexServer;
   private t2pFuncId?: string;
   private readingBar = false;
+  private serverHost = "localhost";
+  private serverPort = 8080;
 
   constructor(denops: Denops) {
     this.denops = denops;
@@ -16,11 +18,11 @@ export default class Application {
     if (this.server.isRunning) {
       this.server.close();
       this.attachListener();
-      this.server.serve();
+      this.server.serve(this.serverHost, this.serverPort);
       await this.echo("synctex restart");
     } else {
       this.attachListener();
-      this.server.serve();
+      this.server.serve(this.serverHost, this.serverPort);
       await this.echo("synctex start");
     }
   }
@@ -55,6 +57,14 @@ export default class Application {
 
   public set useReadingBar(value: boolean) {
     this.readingBar = value;
+  }
+
+  public set serverHostname(hostname: string) {
+    this.serverHost = hostname;
+  }
+
+  public set serverPortNumber(port: number) {
+    this.serverPort = port;
   }
 
   private attachListener() {
