@@ -8,10 +8,10 @@ License : MIT license
 CONTENTS						*synctex-contents*
 
 Introduction					|synctex-introduction|
-Install						|synctex-usage|
+Install						|synctex-install|
 Interface					|synctex-interface|
   Functions					|synctex-functions|
-  Options					|synctex-option|
+  Options					|synctex-options|
 Changelog					|synctex-changelog|
 
 
