@@ -79,7 +79,7 @@ export default class Application {
   private async createPdfPath(texPath: string): Promise<string> {
     return this.t2pFuncId
       ? await this.call<string>("denops#callback#call", this.t2pFuncId, texPath)
-      : texPath.replace(".tex", ".pdf");
+      : texPath.replace(/tex$/, "pdf");
   }
 
   private async echo(message: string): Promise<void> {
