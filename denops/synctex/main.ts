@@ -15,7 +15,6 @@ export function main(denops: Denops): void {
     },
     async option(key: unknown, value: unknown): Promise<void> {
       const op = unknown.ensureString(key);
-      console.log(op);
       switch (op) {
         case "pdfFile": {
           // TODO: 正しいfunctionになってるかチェックしたほうがいい？

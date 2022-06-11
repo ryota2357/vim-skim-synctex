@@ -61,8 +61,7 @@ export default class SynctexSever {
       `  app.document.go({to: ${request.line}, from: "${request.texFile}", showingReadingBar: ${request.readingBar}});`,
       `}'`,
     ].join(" ");
-    const ret = await denops.call("system", ["sh", "-c", script]) as string;
-    console.log(ret);
+    await denops.call("system", ["sh", "-c", script]) as string;
   }
 
   private currentStatusJson(): string {

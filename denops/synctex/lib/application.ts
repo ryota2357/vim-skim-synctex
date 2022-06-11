@@ -82,7 +82,6 @@ export default class Application {
   private async setCursor(data: string): Promise<void> {
     const line = parseInt(data.split(" ")[0]);
     await this.echo("on put");
-    console.log(line);
     await this.call("cursor", line, 2);
   }
 
