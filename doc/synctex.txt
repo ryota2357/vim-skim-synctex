@@ -104,6 +104,9 @@ port			(number)
 ==============================================================================
 Changelog						*synctex-changelog*
 
+2022.6.13
+* Default value of option autoActivate changed to false
+
 2022.6.12
 * Create this help documentation.
 
