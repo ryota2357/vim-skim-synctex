@@ -37,6 +37,11 @@ export function main(denops: Denops): void {
           app.serverPortNumber = val;
           break;
         }
+        case "autoActive": {
+          const val = unknown.ensureBoolean(value);
+          app.useAutoActive = val;
+          break;
+        }
         default:
           await denops.call(`echomsg "undefind option: ${key}"`);
       }

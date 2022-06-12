@@ -66,6 +66,13 @@ synctex#stop()					*synctex#stop()*
 
 Options							*synctex-options*
 
+						*synctex-option-autoActive*
+autoActive		(boolean)
+		If is is true, Skim app is launched (or focused) when call
+		|synctex#forwardSerch()|.
+
+		Default: v:true
+
 						*synctex-option-hostname*
 hostname		(string)
 		Specify the server hostname started by |synctex#start()|

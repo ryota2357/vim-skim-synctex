@@ -8,6 +8,7 @@ export default class Application {
   private readingBar = false;
   private serverHost = "localhost";
   private serverPort = 8080;
+  private autoActive = true;
 
   constructor(denops: Denops) {
     this.denops = denops;
@@ -48,6 +49,7 @@ export default class Application {
       pdfFile: await this.createPdfPath(bufname),
       line: cursorLine,
       readingBar: this.readingBar,
+      activate: this.autoActive,
     });
   }
 
@@ -65,6 +67,10 @@ export default class Application {
 
   public set serverPortNumber(port: number) {
     this.serverPort = port;
+  }
+
+  public set useAutoActive(value: boolean) {
+    this.autoActive = value;
   }
 
   private attachListener() {
