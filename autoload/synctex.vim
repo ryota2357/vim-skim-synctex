@@ -14,7 +14,7 @@ endfunction
 function! synctex#option(key, value) abort
   if a:key ==# 'pdfFile'
     if s:is_running()
-      call denops#notify('option', [a:method, denops#callback#register(a:value)])
+      call denops#notify('synctex', 'option', [a:key, denops#callback#register(a:value)])
     else
       let s:func = a:value
       autocmd User DenopsPluginPost:synctex call s:pdfFile()
