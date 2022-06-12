@@ -82,7 +82,7 @@ hostname		(string)
 						*synctex-option-readingBar*
 readingBar		(boolean)
 		If it is true, highlight pdf line when call
-		*synctex#forwardSerch()*
+		|synctex#forwardSerch()|
 
 		Default: v:false
 
