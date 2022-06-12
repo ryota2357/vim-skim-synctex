@@ -8,7 +8,7 @@ export default class Application {
   private readingBar = false;
   private serverHost = "localhost";
   private serverPort = 8080;
-  private autoActive = true;
+  private autoActive = false;
 
   constructor(denops: Denops) {
     this.denops = denops;

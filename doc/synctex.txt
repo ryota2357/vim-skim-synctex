@@ -68,10 +68,10 @@ Options							*synctex-options*
 
 						*synctex-option-autoActive*
 autoActive		(boolean)
-		If is is true, Skim app is launched (or focused) when call
-		|synctex#forwardSerch()|.
+		If is is true, Skim app is activate (launched or focused) when
+		call |synctex#forwardSerch()|.
 
-		Default: v:true
+		Default: v:false
 
 						*synctex-option-hostname*
 hostname		(string)

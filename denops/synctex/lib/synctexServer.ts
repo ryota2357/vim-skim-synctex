@@ -56,7 +56,7 @@ export default class SynctexSever {
       `osascript -l JavaScript -e '`,
       `var app = Application("Skim");`,
       `if(app.exists()) {`,
-      `  ${request.activate ? "app.activate()" : ""};`,
+      `  ${request.activate ? "app.activate();" : ""}`,
       `  app.open("${request.pdfFile}");`,
       `  app.document.go({to: ${request.line}, from: "${request.texFile}", showingReadingBar: ${request.readingBar}});`,
       `}'`,
