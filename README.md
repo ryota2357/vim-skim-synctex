@@ -24,6 +24,30 @@ vim-skim-synctex requires both Deno and denops.vim.
 - [https://deno.land/](https://deno.land/)
 - [https://github.com/vim-denops/denops.vim](https://github.com/vim-denops/denops.vim)
 
-## skim setting
+## Skim setting
+
+Skim settings are required.
+
+Skim > Prefarence > Sync
 
 ![skimの設定](https://github.com/ryota2357/vim-skim-synctex/blob/images/skim-setting.png)
+
+If you set option `hostname` or `port` in `synctex#option()`, you should fix this settings.
+
+## Example
+
+```vim
+call synctex#option('readingBar', v:true)
+
+" fix skim setting(Prefarence > Sync > PDF-Tex Sync support > Arguments)
+"   localhost:6000 -XPUT -d "%line %file"
+call synctex#option('port', 6000)
+
+autocmd FileType tex call s:TexKeymap()
+
+function! s:TexKeymap() abort
+  nnoremap <buffer> <Space>s <Cmd>call synctex#forwardSerch()<CR>
+  command! -buffer SynctexStart :call synctex#start()
+  command! -buffer SynctexStop :call synctex#stop()
+endfunction
+```
