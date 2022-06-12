@@ -43,7 +43,11 @@ export function main(denops: Denops): void {
           break;
         }
         default:
-          await denops.call(`echomsg "undefind option: ${key}"`);
+          await denops.cmd([
+            `echohl ErrorMsg`,
+            `echo "[synctex] undefined option: ${key}"`,
+            `echohl None`,
+          ].join(" | "));
       }
     },
   };
