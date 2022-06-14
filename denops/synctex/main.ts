@@ -24,22 +24,22 @@ export function main(denops: Denops): void {
         }
         case "readingBar": {
           const val = unknown.ensureBoolean(value);
-          app.useReadingBar = val;
+          app.readingBar = val;
           break;
         }
         case "hostname": {
           const val = unknown.ensureString(value);
-          app.serverHostname = val;
+          app.serverHost = val;
           break;
         }
         case "port": {
           const val = unknown.ensureNumber(value);
-          app.serverPortNumber = val;
+          app.serverPort = val;
           break;
         }
         case "autoActive": {
           const val = unknown.ensureBoolean(value);
-          app.useAutoActive = val;
+          app.autoActive = val;
           break;
         }
         default:

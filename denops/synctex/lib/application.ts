@@ -4,11 +4,13 @@ import SynctexServer from "./synctexServer.ts";
 export default class Application {
   private denops: Denops;
   private server: SynctexServer;
-  private t2pFuncId?: string;
-  private readingBar = false;
-  private serverHost = "localhost";
-  private serverPort = 8080;
-  private autoActive = false;
+  private option: Option = {
+    tex2pdfFunctionId: undefined,
+    readingBar: true,
+    serverHost: "localhost",
+    serverPort: 8080,
+    autoActive: false,
+  };
 
   constructor(denops: Denops) {
     this.denops = denops;
@@ -19,11 +21,11 @@ export default class Application {
     if (this.server.isRunning) {
       this.server.close();
       this.attachListener();
-      this.server.serve(this.serverHost, this.serverPort);
+      this.server.serve(this.option.serverHost, this.option.serverPort);
       await this.echo("synctex restart");
     } else {
       this.attachListener();
-      this.server.serve(this.serverHost, this.serverPort);
+      this.server.serve(this.option.serverHost, this.option.serverPort);
       await this.echo("synctex start");
     }
   }
@@ -48,29 +50,29 @@ export default class Application {
       texFile: bufname,
       pdfFile: await this.createPdfPath(bufname),
       line: cursorLine,
-      readingBar: this.readingBar,
-      activate: this.autoActive,
+      readingBar: this.option.readingBar,
+      activate: this.option.autoActive,
     });
   }
 
   public set tex2pdfFunctionId(id: string) {
-    this.t2pFuncId = id;
+    this.option.tex2pdfFunctionId = id;
   }
 
-  public set useReadingBar(value: boolean) {
-    this.readingBar = value;
+  public set readingBar(value: boolean) {
+    this.option.readingBar = value;
   }
 
-  public set serverHostname(hostname: string) {
-    this.serverHost = hostname;
+  public set serverHost(hostname: string) {
+    this.option.serverHost = hostname;
   }
 
-  public set serverPortNumber(port: number) {
-    this.serverPort = port;
+  public set serverPort(port: number) {
+    this.option.serverPort = port;
   }
 
-  public set useAutoActive(value: boolean) {
-    this.autoActive = value;
+  public set autoActive(value: boolean) {
+    this.option.autoActive = value;
   }
 
   private attachListener() {
@@ -91,8 +93,9 @@ export default class Application {
   }
 
   private async createPdfPath(texPath: string): Promise<string> {
-    return this.t2pFuncId
-      ? await this.call<string>("denops#callback#call", this.t2pFuncId, texPath)
+    const id = this.option.tex2pdfFunctionId;
+    return id
+      ? await this.call<string>("denops#callback#call", id, texPath)
       : texPath.replace(/tex$/, "pdf");
   }
 
@@ -103,4 +106,12 @@ export default class Application {
   private async call<T>(fn: string, ...args: unknown[]): Promise<T> {
     return await this.denops.call(fn, ...args) as T;
   }
+}
+
+interface Option {
+  tex2pdfFunctionId?: string;
+  readingBar: boolean;
+  serverHost: string;
+  serverPort: number;
+  autoActive: boolean;
 }
