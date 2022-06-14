@@ -20,8 +20,6 @@ Introduction						*synctex-introduction*
 
 *vim-skim-synctex* ( *synctex* ) enables you to do synctex (forward serch and
 backward serch) with Skim.app in macOS.
-This plugin did not provide any default keymap and any variable, only provides
-some |synctex-functions|.
 
 If you are using vimtex, you can do synctax using it. So you may not need
 to use this plugin.
@@ -37,6 +35,11 @@ https://github.com/vim-denops/denops.vim
 
 ==============================================================================
 Interface						*synctex-interface*
+
+This plugin did not provide any default keymap and any variable, only provides
+some Function.
+
+If you want to customize some options, you should use |synctex#option()|
 
 ------------------------------------------------------------------------------
 Function						*synctex-functions*
@@ -68,8 +71,8 @@ Options							*synctex-options*
 
 						*synctex-option-autoActive*
 autoActive		(boolean)
-		If is is true, Skim app is activate (launched or focused) when
-		call |synctex#forwardSerch()|.
+		If is is true, Skim app is activate when call
+		|synctex#forwardSerch()|.
 
 		Default: v:false
 
