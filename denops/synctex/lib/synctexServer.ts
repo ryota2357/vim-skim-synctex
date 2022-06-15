@@ -65,7 +65,7 @@ export default class SynctexSever {
   }
 
   private currentStatusJson(): string {
-    return `{"name":"vim-synctex-skim","hostname":${this.hostname},"port":${this.port},}\n`;
+    return `{"name":"vim-skim-synctex","hostname":${this.hostname},"port":${this.port},}\n`;
   }
 }
 
