@@ -1,4 +1,4 @@
-import { Denops } from "./deps.ts";
+import { Denops, func, helper } from "./deps.ts";
 import SynctexServer from "./synctexServer.ts";
 
 export default class Application {
@@ -22,30 +22,30 @@ export default class Application {
       this.server.close();
       this.attachListener();
       this.server.serve(this.option.serverHost, this.option.serverPort);
-      await this.echo("synctex restart");
+      await helper.echo(this.denops, "synctex restart");
     } else {
       this.attachListener();
       this.server.serve(this.option.serverHost, this.option.serverPort);
-      await this.echo("synctex start");
+      await helper.echo(this.denops, "synctex start");
     }
   }
 
   public async closeServer(): Promise<void> {
     if (this.server.isRunning) {
       this.server.close();
-      await this.echo("synctex stop");
+      await helper.echo(this.denops, "synctex stop");
     } else {
-      await this.echo("synctex is already stopped");
+      await helper.echo(this.denops, "synctex is already stopped");
     }
   }
 
   public async forwardSearch() {
     if (this.server.isRunning == false) {
-      await this.echo("synctex is not running");
+      await helper.echo(this.denops, "synctex is not running");
       return;
     }
-    const bufname = await this.call<string>("expand", "%:p");
-    const cursorLine = (await this.call<number[]>("getpos", "."))[1];
+    const bufname = await func.expand(this.denops, "%:p") as string;
+    const cursorLine = (await func.getcurpos(this.denops))[1];
     this.server.request(this.denops, {
       texFile: bufname,
       pdfFile: await this.createPdfPath(bufname),
@@ -89,22 +89,14 @@ export default class Application {
 
   private async setCursor(data: string): Promise<void> {
     const line = parseInt(data.split(" ")[0]);
-    await this.call("cursor", line, 2);
+    await func.cursor(this.denops, line, 1);
   }
 
   private async createPdfPath(texPath: string): Promise<string> {
     const id = this.option.tex2pdfFunctionId;
     return id
-      ? await this.call<string>("denops#callback#call", id, texPath)
+      ? await this.denops.call("denops#callback#call", id, texPath) as string
       : texPath.replace(/tex$/, "pdf");
-  }
-
-  private async echo(message: string): Promise<void> {
-    await this.denops.cmd(`echo "${message}"`);
-  }
-
-  private async call<T>(fn: string, ...args: unknown[]): Promise<T> {
-    return await this.denops.call(fn, ...args) as T;
   }
 }
 

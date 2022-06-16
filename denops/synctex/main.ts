@@ -1,4 +1,4 @@
-import { Denops, unknown } from "./lib/deps.ts";
+import { Denops, helper, unknown } from "./lib/deps.ts";
 import Application from "./lib/application.ts";
 
 export function main(denops: Denops): void {
@@ -43,11 +43,7 @@ export function main(denops: Denops): void {
           break;
         }
         default:
-          await denops.cmd([
-            `echohl ErrorMsg`,
-            `echo "[synctex] undefined option: ${key}"`,
-            `echohl None`,
-          ].join(" | "));
+          await helper.echoerr(denops, `[synctex] undefined option: ${key}`);
       }
     },
   };
