@@ -10,7 +10,6 @@ function! synctex#forwardSerch() abort
   call s:notify('forwardSearch', [])
 endfunction
 
-
 function! synctex#option(key, value) abort
   if a:key ==# 'pdfFile'
     if s:is_running()

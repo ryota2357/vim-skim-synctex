@@ -52,16 +52,17 @@ export default class SynctexSever {
   }
 
   public async request(denops: Denops, request: ForwardSearchRequest) {
-    const script = [
-      `osascript -l JavaScript -e '`,
-      `var app = Application("Skim");`,
-      `if(app.exists()) {`,
-      `  ${request.activate ? "app.activate();" : ""}`,
-      `  app.open("${request.pdfFile}");`,
-      `  app.document.go({to: ${request.line}, from: "${request.texFile}", showingReadingBar: ${request.readingBar}});`,
-      `}'`,
-    ].join(" ");
-    await denops.call("system", ["sh", "-c", script]) as string;
+    await denops.cmd("call system(['sh', '-c', script])", {
+      script: [
+        `osascript -l JavaScript -e '`,
+        `var app = Application("Skim");`,
+        `if(app.exists()) {`,
+        `  ${request.activate ? "app.activate();" : ""}`,
+        `  app.open("${request.pdfFile}");`,
+        `  app.document.go({to: ${request.line}, from: "${request.texFile}", showingReadingBar: ${request.readingBar}});`,
+        `}'`,
+      ].join(" "),
+    });
   }
 
   private currentStatusJson(): string {
