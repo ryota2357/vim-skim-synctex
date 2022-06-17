@@ -1,9 +1,11 @@
-import { Denops, func, helper } from "./deps.ts";
+import { autocmd, Denops, func, helper } from "./deps.ts";
 import SynctexServer from "./synctexServer.ts";
 
 export default class Application {
   private denops: Denops;
   private server: SynctexServer;
+  private attachedBuf?: string;
+  private autocmdName?: string;
   private option: Option = {
     tex2pdfFunctionId: undefined,
     readingBar: true,
@@ -22,6 +24,8 @@ export default class Application {
       await helper.echo(this.denops, "synctex is already started");
     } else {
       this.attachListener();
+      this.attachedBuf = await func.expand(this.denops, "%:p") as string;
+      this.autocmdName = await this.createAutocmd();
       this.server.serve(this.option.serverHost, this.option.serverPort);
       await helper.echo(this.denops, "synctex start");
     }
@@ -30,6 +34,9 @@ export default class Application {
   public async closeServer(): Promise<void> {
     if (this.server.isRunning) {
       this.server.close();
+      await this.denops.cmd(`autocmd! ${this.autocmdName}`);
+      this.autocmdName = undefined;
+      this.attachedBuf = undefined;
       await helper.echo(this.denops, "synctex stop");
     } else {
       await helper.echo(this.denops, "synctex is already stopped");
@@ -38,23 +45,29 @@ export default class Application {
 
   public async forwardSearch() {
     if (this.server.isRunning == false) {
-      await helper.echo(this.denops, "synctex is not running");
+      await helper.echo(this.denops, "synctex is not started");
       return;
     }
-    const bufname = await func.expand(this.denops, "%:p") as string;
+
+    const currentBuf = await func.expand(this.denops, "%:p") as string;
     const cursorLine = (await func.getcurpos(this.denops))[1];
-    this.server.request(this.denops, {
-      texFile: bufname,
-      pdfFile: await this.createPdfPath(bufname),
-      line: cursorLine,
-      readingBar: this.option.readingBar,
-      activate: this.option.autoActive,
-    });
+
+    if (currentBuf == this.attachedBuf) {
+      this.server.request(this.denops, {
+        texFile: currentBuf,
+        pdfFile: await this.createPdfPath(currentBuf),
+        line: cursorLine,
+        readingBar: this.option.readingBar,
+        activate: this.option.autoActive,
+      });
+    } else {
+      await helper.echo(this.denops, "synctex is started in other buffer");
+    }
   }
 
   public status() {
     const info = this.server.info();
-    info["attached"] = ""; // TODO: need to implement
+    info["attached"] = this.attachedBuf ?? "";
     return info;
   }
 
@@ -80,19 +93,41 @@ export default class Application {
 
   private attachListener() {
     this.server.setListener(async (request: Request) => {
-      if (request.method == "GET") return null;
-      if (request.method == "PUT") {
-        const data = await request.text();
-        this.setCursor(data);
-        return data;
+      switch (request.method) {
+        case "GET":
+          return null;
+        case "PUT": {
+          const data = await request.text();
+          const line = parseInt(data.split(" ")[0]);
+          const file = data.split(" ")[1];
+          const currentBuf = await func.expand(this.denops, "%:p") as string;
+          console.log([
+            `file: ${file}`,
+            `attached: ${this.attachedBuf}`,
+            `currentBuf: ${currentBuf}`,
+            `equal: ${file == this.attachedBuf && file == currentBuf}`,
+          ].join("\n"));
+          if (file == this.attachedBuf && file == currentBuf) {
+            await func.cursor(this.denops, line, 1);
+          }
+          return data;
+        }
+        default:
+          return undefined;
       }
-      return undefined;
     });
   }
 
-  private async setCursor(data: string): Promise<void> {
-    const line = parseInt(data.split(" ")[0]);
-    await func.cursor(this.denops, line, 1);
+  private async createAutocmd(): Promise<string> {
+    const name = `synctex-${await func.bufname(this.denops)}`;
+    await autocmd.group(this.denops, name, (helper) => {
+      helper.define(
+        ["BufDelete"],
+        "<buffer>",
+        `call denops#notify("synctex", "stop", [])`,
+      );
+    });
+    return name;
   }
 
   private async createPdfPath(texPath: string): Promise<string> {
