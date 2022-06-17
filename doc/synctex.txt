@@ -60,9 +60,9 @@ synctex#start()
 		And start server specified by |synctex-option-hostname| and
 		|synctex-option-port|.
 
-						*synctex#stats()*
-synctex#stats()
-		Get current this plugin's stats.
+						*synctex#status()*
+synctex#status()
+		Get current this plugin's status.
 
 						*synctex#stop()*
 synctex#stop()
@@ -110,6 +110,9 @@ port			(number)
 
 ==============================================================================
 Changelog						*synctex-changelog*
+
+2022.6.17
+* Add synctex#status()
 
 2022.6.13
 * Default value of option autoActivate changed to false
