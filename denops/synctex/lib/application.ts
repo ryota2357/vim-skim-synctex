@@ -19,10 +19,7 @@ export default class Application {
 
   public async startServer(): Promise<void> {
     if (this.server.isRunning) {
-      this.server.close();
-      this.attachListener();
-      this.server.serve(this.option.serverHost, this.option.serverPort);
-      await helper.echo(this.denops, "synctex restart");
+      await helper.echo(this.denops, "synctex is already started");
     } else {
       this.attachListener();
       this.server.serve(this.option.serverHost, this.option.serverPort);
