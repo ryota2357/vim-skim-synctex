@@ -44,24 +44,28 @@ If you want to customize some options, you should use |synctex#option()|
 ------------------------------------------------------------------------------
 Function						*synctex-functions*
 
-synctex#forwardSerch()				*synctex#forwardSerch()*
-
+						*synctex#forwardSerch()*
+synctex#forwardSerch()
 		Do forward serch with PDF file specified by
 		|synctex-option-pdfFile|.
 
-synctex#option({option-name}, {value})		*synctex#option()*
-
+						*synctex#option()*
+synctex#option({option-name}, {value})
 		Set {option-name} option to {value}.
 		See |synctex-options| for available {option-name}.
 
-synctex#start()					*synctex#start()*
-
+						*synctex#start()*
+synctex#start()
 		Enables forward search and backward search.
 		And start server specified by |synctex-option-hostname| and
 		|synctex-option-port|.
 
-synctex#stop()					*synctex#stop()*
+						*synctex#stats()*
+synctex#stats()
+		Get current this plugin's stats.
 
+						*synctex#stop()*
+synctex#stop()
 		Disable forward search and backward search.
 		And stop the server started by |synctes#start()|.
 

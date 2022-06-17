@@ -13,6 +13,9 @@ export function main(denops: Denops): void {
     async forwardSearch(): Promise<void> {
       await app.forwardSearch();
     },
+    status(): Promise<Record<string, string | number>> {
+      return Promise.resolve(app.status());
+    },
     async option(key: unknown, value: unknown): Promise<void> {
       const op = unknown.ensureString(key);
       switch (op) {

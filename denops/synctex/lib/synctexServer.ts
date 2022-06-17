@@ -7,7 +7,7 @@ export default class SynctexSever {
   private observer?: (request: Request) => ObserverResponseType;
 
   public async serve(hostname: string, port: number): Promise<void> {
-    if (this.listener != undefined) {
+    if (this.listener) {
       this.listener.close();
       this.listener = undefined;
     }
@@ -24,15 +24,39 @@ export default class SynctexSever {
   }
 
   public close() {
-    if (this.listener != undefined) {
+    if (this.listener) {
       this.listener.close();
       this.listener = undefined;
     }
+    this.hostname = undefined;
+    this.port = undefined;
     this.observer = undefined;
+  }
+
+  public async request(denops: Denops, request: ForwardSearchRequest) {
+    await denops.cmd("call system(['sh', '-c', script])", {
+      script: [
+        `osascript -l JavaScript -e '`,
+        `var app = Application("Skim");`,
+        `if(app.exists()) {`,
+        `  ${request.activate ? "app.activate();" : ""}`,
+        `  app.open("${request.pdfFile}");`,
+        `  app.document.go({to: ${request.line}, from: "${request.texFile}", showingReadingBar: ${request.readingBar}});`,
+        `}'`,
+      ].join(" "),
+    });
   }
 
   public get isRunning(): boolean {
     return this.listener != undefined;
+  }
+
+  public info(): Record<string, string | number> {
+    return {
+      hostname: this.hostname ?? "",
+      port: this.port ?? "",
+      status: this.isRunning ? "running" : "stopped",
+    };
   }
 
   private async handleHttp(conn: Deno.Conn) {
@@ -49,20 +73,6 @@ export default class SynctexSever {
         }
       }
     }
-  }
-
-  public async request(denops: Denops, request: ForwardSearchRequest) {
-    await denops.cmd("call system(['sh', '-c', script])", {
-      script: [
-        `osascript -l JavaScript -e '`,
-        `var app = Application("Skim");`,
-        `if(app.exists()) {`,
-        `  ${request.activate ? "app.activate();" : ""}`,
-        `  app.open("${request.pdfFile}");`,
-        `  app.document.go({to: ${request.line}, from: "${request.texFile}", showingReadingBar: ${request.readingBar}});`,
-        `}'`,
-      ].join(" "),
-    });
   }
 
   private currentStatusJson(): string {

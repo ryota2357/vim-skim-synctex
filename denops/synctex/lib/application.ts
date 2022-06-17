@@ -52,6 +52,12 @@ export default class Application {
     });
   }
 
+  public status() {
+    const info = this.server.info();
+    info["attached"] = ""; // TODO: need to implement
+    return info;
+  }
+
   public set tex2pdfFunctionId(id: string) {
     this.option.tex2pdfFunctionId = id;
   }

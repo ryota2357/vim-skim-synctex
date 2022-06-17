@@ -10,6 +10,12 @@ function! synctex#forwardSerch() abort
   call s:notify('forwardSearch', [])
 endfunction
 
+function! synctex#status() abort
+  return s:is_running()
+        \ ? denops#request('synctex', 'status', [])
+        \ : {'status': 'denops server is stopped'}
+endfunction
+
 function! synctex#option(key, value) abort
   if a:key ==# 'pdfFile'
     if s:is_running()
