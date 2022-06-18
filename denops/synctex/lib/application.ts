@@ -8,7 +8,7 @@ export default class Application {
   private autocmdName?: string;
   private option: Option = {
     tex2pdfFunctionId: undefined,
-    readingBar: true,
+    readingBar: false,
     serverHost: "localhost",
     serverPort: 8080,
     autoActive: false,
