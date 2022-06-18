@@ -45,6 +45,11 @@ export function main(denops: Denops): void {
           app.autoActive = val;
           break;
         }
+        case "autoQuit": {
+          const val = unknown.ensureBoolean(value);
+          app.autoQuit = val;
+          break;
+        }
         default:
           await helper.echoerr(denops, `[synctex] undefined option: ${key}`);
       }

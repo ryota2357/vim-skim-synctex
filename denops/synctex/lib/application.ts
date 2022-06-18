@@ -12,6 +12,7 @@ export default class Application {
     serverHost: "localhost",
     serverPort: 8080,
     autoActive: false,
+    autoQuit: false,
   };
 
   constructor(denops: Denops) {
@@ -37,6 +38,17 @@ export default class Application {
       await this.denops.cmd(`autocmd! ${this.autocmdName}`);
       this.autocmdName = undefined;
       this.attachedBuf = undefined;
+      if (this.option.autoQuit) {
+        this.denops.cmd("call system(['sh', '-c', script])", {
+          script: [
+            `osascript -l JavaScript -e '`,
+            `var app = Application("Skim");`,
+            `if(app.exists()) {`,
+            `  app.quit();`,
+            `}'`,
+          ].join(" "),
+        });
+      }
       await helper.echo(this.denops, "synctex stop");
     } else {
       await helper.echo(this.denops, "synctex is already stopped");
@@ -89,6 +101,10 @@ export default class Application {
 
   public set autoActive(value: boolean) {
     this.option.autoActive = value;
+  }
+
+  public set autoQuit(value: boolean) {
+    this.option.autoQuit = value;
   }
 
   private attachListener() {
@@ -144,4 +160,5 @@ interface Option {
   serverHost: string;
   serverPort: number;
   autoActive: boolean;
+  autoQuit: boolean;
 }

@@ -80,6 +80,12 @@ autoActive		(boolean)
 
 		Default: v:false
 
+						*synctex-option-autoQuit*
+autoQuit		(boolean)
+		If it is true, Skim app quit when call |synctex#stop()|
+
+		Default: v:false
+
 						*synctex-option-hostname*
 hostname		(string)
 		Specify the server hostname started by |synctex#start()|
@@ -110,6 +116,9 @@ port			(number)
 
 ==============================================================================
 Changelog						*synctex-changelog*
+
+2022.6.19
+* Add option: autoQuit
 
 2022.6.17
 * Add synctex#status()
