@@ -24,12 +24,15 @@ export default class Application {
     if (this.server.isRunning) {
       await helper.echo(this.denops, "[synctex] Already started");
     } else {
-      const ft = await variable.options.get(this.denops, "filetype") as string;
-      if (ft.includes("tex") == false) {
+      const filetype =
+        await variable.options.get(this.denops, "filetype") as string ??
+          "no filetype";
+      if (!filetype.includes("tex")) {
         await helper.echoerr(
           this.denops,
-          `[synctex] Unsupported file types: ${ft}`,
+          `[synctex] Unsupported filetypes: ${filetype}`,
         );
+        return;
       }
       this.attachListener();
       this.attachedBuf = await func.expand(this.denops, "%:p") as string;
