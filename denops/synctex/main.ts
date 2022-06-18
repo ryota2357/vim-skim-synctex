@@ -51,7 +51,7 @@ export function main(denops: Denops): void {
           break;
         }
         default:
-          await helper.echoerr(denops, `[synctex] undefined option: ${key}`);
+          await helper.echoerr(denops, `[synctex] Undefined option: ${key}`);
       }
     },
   };

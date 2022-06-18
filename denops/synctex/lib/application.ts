@@ -1,4 +1,4 @@
-import { autocmd, Denops, func, helper } from "./deps.ts";
+import { autocmd, Denops, func, helper, variable } from "./deps.ts";
 import SynctexServer from "./synctexServer.ts";
 
 export default class Application {
@@ -22,8 +22,15 @@ export default class Application {
 
   public async startServer(): Promise<void> {
     if (this.server.isRunning) {
-      await helper.echo(this.denops, "synctex is already started");
+      await helper.echo(this.denops, "[synctex] Already started");
     } else {
+      const ft = await variable.options.get(this.denops, "filetype") as string;
+      if (ft.includes("tex") == false) {
+        await helper.echoerr(
+          this.denops,
+          `[synctex] Unsupported file types: ${ft}`,
+        );
+      }
       this.attachListener();
       this.attachedBuf = await func.expand(this.denops, "%:p") as string;
       this.autocmdName = await this.createAutocmd();
@@ -49,15 +56,15 @@ export default class Application {
           ].join(" "),
         });
       }
-      await helper.echo(this.denops, "synctex stop");
+      await helper.echo(this.denops, "[synctex] Stop");
     } else {
-      await helper.echo(this.denops, "synctex is already stopped");
+      await helper.echo(this.denops, "[synctex] Already stopped");
     }
   }
 
   public async forwardSearch() {
     if (this.server.isRunning == false) {
-      await helper.echo(this.denops, "synctex is not started");
+      await helper.echo(this.denops, "[synctex] Not started");
       return;
     }
 
@@ -73,7 +80,7 @@ export default class Application {
         activate: this.option.autoActive,
       });
     } else {
-      await helper.echo(this.denops, "synctex is started in other buffer");
+      await helper.echo(this.denops, "[synctex] Attached to other buffer");
     }
   }
 
