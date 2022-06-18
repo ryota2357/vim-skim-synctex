@@ -117,12 +117,6 @@ export default class Application {
           const line = parseInt(data.split(" ")[0]);
           const file = data.split(" ")[1];
           const currentBuf = await func.expand(this.denops, "%:p") as string;
-          console.log([
-            `file: ${file}`,
-            `attached: ${this.attachedBuf}`,
-            `currentBuf: ${currentBuf}`,
-            `equal: ${file == this.attachedBuf && file == currentBuf}`,
-          ].join("\n"));
           if (file == this.attachedBuf && file == currentBuf) {
             await func.cursor(this.denops, line, 1);
           }
