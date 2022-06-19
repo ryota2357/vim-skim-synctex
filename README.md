@@ -32,7 +32,7 @@ Skim > Prefarence > Sync > PDF-TeX Sync support
 
 - Preset: `Custom`
 - Command: `curl`
-- Arguments: `localhost:8080 -XPUT -d localhost:8080 -XPUT -d "%line %file"`
+- Arguments: `localhost:8080 -XPUT -d "%line %file"`
 
 ![skimの設定](https://github.com/ryota2357/vim-skim-synctex/blob/images/skim-setting.png)
 
