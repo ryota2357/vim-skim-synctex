@@ -1,6 +1,6 @@
 *synctex.txt*
 
-Version : 0.1.0
+Version : 1.0.0
 Author  : ryota2357
 License : MIT license
 
