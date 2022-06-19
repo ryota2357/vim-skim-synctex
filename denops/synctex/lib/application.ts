@@ -146,6 +146,11 @@ export default class Application {
         "<buffer>",
         `call denops#notify("synctex", "stop", [])`,
       );
+      helper.define(
+        ["ExitPre"],
+        "*",
+        `call denops#notify("synctex", "stop" , [])`,
+      );
     });
     return name;
   }
