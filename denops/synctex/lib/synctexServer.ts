@@ -1,4 +1,4 @@
-import { Denops } from "./deps.ts";
+import { Denops, func } from "./deps.ts";
 
 export default class SynctexSever {
   private listener?: Deno.Listener;
@@ -34,17 +34,14 @@ export default class SynctexSever {
   }
 
   public async request(denops: Denops, request: ForwardSearchRequest) {
-    await denops.cmd("call system(['sh', '-c', script])", {
-      script: [
-        `osascript -l JavaScript -e '`,
-        `var app = Application("Skim");`,
-        `if(app.exists()) {`,
-        `  ${request.activate ? "app.activate();" : ""}`,
-        `  app.open("${request.pdfFile}");`,
-        `  app.document.go({to: ${request.line}, from: "${request.texFile}", showingReadingBar: ${request.readingBar}});`,
-        `}'`,
-      ].join(" "),
-    });
+    await func.system(denops, "osascript -l JavaScript", [
+      `var app = Application("Skim");`,
+      `if(app.exists()) {`,
+      `  ${request.activate ? "app.activate();" : ""}`,
+      `  app.open("${request.pdfFile}");`,
+      `  app.document.go({to: ${request.line}, from: "${request.texFile}", showingReadingBar: ${request.readingBar}});`,
+      `}`,
+    ]);
   }
 
   public get isRunning(): boolean {
