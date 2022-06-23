@@ -49,15 +49,12 @@ export default class Application {
       this.autocmdName = undefined;
       this.attachedBuf = undefined;
       if (this.option.autoQuit) {
-        this.denops.cmd("call system(['sh', '-c', script])", {
-          script: [
-            `osascript -l JavaScript -e '`,
-            `var app = Application("Skim");`,
-            `if(app.exists()) {`,
-            `  app.quit();`,
-            `}'`,
-          ].join(" "),
-        });
+        await func.system(this.denops, "osascript -l JavaScript", [
+          `var app = Application("Skim");`,
+          `if(app.exists()) {`,
+          `  app.quit();`,
+          `}`,
+        ]);
       }
       await helper.echo(this.denops, "[synctex] Stop");
     } else {
@@ -145,11 +142,6 @@ export default class Application {
         ["BufDelete"],
         "<buffer>",
         `call denops#notify("synctex", "stop", [])`,
-      );
-      helper.define(
-        ["ExitPre"],
-        "*",
-        `call denops#notify("synctex", "stop" , [])`,
       );
     });
     return name;
