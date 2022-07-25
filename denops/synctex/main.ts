@@ -1,4 +1,4 @@
-import { Denops, helper, unknown } from "./lib/deps.ts";
+import { Denops, unknown } from "./lib/deps.ts";
 import Application from "./lib/application.ts";
 
 export function main(denops: Denops): void {
@@ -20,7 +20,6 @@ export function main(denops: Denops): void {
       const op = unknown.ensureString(key);
       switch (op) {
         case "pdfFile": {
-          // TODO: 正しいfunctionになってるかチェックしたほうがいい？
           const val = unknown.ensureString(value);
           app.tex2pdfFunctionId = val;
           break;
@@ -51,7 +50,10 @@ export function main(denops: Denops): void {
           break;
         }
         default:
-          await helper.echoerr(denops, `[synctex] Undefined option: ${key}`);
+          await denops.call(
+            "synctex#__print_error",
+            `Undefined option: ${key}`,
+          );
       }
     },
   };

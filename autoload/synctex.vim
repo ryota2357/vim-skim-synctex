@@ -29,6 +29,12 @@ function! synctex#option(key, value) abort
   endif
 endfunction
 
+function! synctex#__print_error(msg) abort
+  echohl Error
+  echomsg printf('[synctex] %s', type(a:msg) ==# v:t_string ? a:msg : string(a:msg))
+  echohl None
+endfunction
+
 function! s:pdfFile() abort
   let l:id = denops#callback#register(s:func)
   call denops#notify('synctex', 'option', ['pdfFile', l:id])

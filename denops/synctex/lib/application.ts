@@ -28,9 +28,9 @@ export default class Application {
         await variable.options.get(this.denops, "filetype") as string ??
           "no filetype";
       if (!filetype.includes("tex")) {
-        await helper.echoerr(
-          this.denops,
-          `[synctex] Unsupported filetypes: ${filetype}`,
+        await this.denops.call(
+          "synctex#__print_error",
+          `Unsupported filetypes: ${filetype}`,
         );
         return;
       }
