@@ -126,6 +126,7 @@ export default class Application {
           const currentBuf = await func.expand(this.denops, "%:p") as string;
           if (file == this.attachedBuf && file == currentBuf) {
             await func.cursor(this.denops, line, 1);
+            await this.denops.cmd("normal! zv"); // Open folds
           }
           return data;
         }
