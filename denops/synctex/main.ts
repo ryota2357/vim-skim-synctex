@@ -1,4 +1,4 @@
-import { Denops, unknown } from "./lib/deps.ts";
+import { Denops, ensure, is } from "./lib/deps.ts";
 import Application from "./lib/application.ts";
 
 export function main(denops: Denops): void {
@@ -17,35 +17,35 @@ export function main(denops: Denops): void {
       return Promise.resolve(app.status());
     },
     async option(key: unknown, value: unknown): Promise<void> {
-      const op = unknown.ensureString(key);
+      const op = ensure(key, is.String);
       switch (op) {
         case "pdfFile": {
-          const val = unknown.ensureString(value);
+          const val = ensure(value, is.String);
           app.tex2pdfFunctionId = val;
           break;
         }
         case "readingBar": {
-          const val = unknown.ensureBoolean(value);
+          const val = ensure(value, is.Boolean);
           app.readingBar = val;
           break;
         }
         case "hostname": {
-          const val = unknown.ensureString(value);
+          const val = ensure(value, is.String);
           app.serverHost = val;
           break;
         }
         case "port": {
-          const val = unknown.ensureNumber(value);
+          const val = ensure(value, is.Number);
           app.serverPort = val;
           break;
         }
         case "autoActive": {
-          const val = unknown.ensureBoolean(value);
+          const val = ensure(value, is.Boolean);
           app.autoActive = val;
           break;
         }
         case "autoQuit": {
-          const val = unknown.ensureBoolean(value);
+          const val = ensure(value, is.Boolean);
           app.autoQuit = val;
           break;
         }
