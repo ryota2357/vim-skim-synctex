@@ -3,4 +3,4 @@ export * as helper from "https://deno.land/x/denops_std@v6.0.1/helper/mod.ts";
 export * as func from "https://deno.land/x/denops_std@v6.0.1/function/mod.ts";
 export * as autocmd from "https://deno.land/x/denops_std@v6.0.1/autocmd/mod.ts";
 export * as variable from "https://deno.land/x/denops_std@v6.0.1/variable/mod.ts";
-export { ensure, is } from "https://deno.land/x/unknownutil@v3.14.1/mod.ts";
+export { ensure, is } from "https://deno.land/x/unknownutil@v3.16.3/mod.ts";
