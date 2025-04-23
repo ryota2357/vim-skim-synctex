@@ -39,7 +39,13 @@ export default class SynctexSever {
       `if(app.exists()) {`,
       `  ${request.activate ? "app.activate();" : ""}`,
       `  app.open("${request.pdfFile}");`,
-      `  app.document.go({to: ${request.line}, from: "${request.texFile}", showingReadingBar: ${request.readingBar}});`,
+      `  app.document.go(${
+          JSON.stringify({
+            to: request.line,
+            from: request.texFile,
+            showingReadingBar: request.readingBar,
+          })
+        });`,
       `}`,
     ]);
   }
