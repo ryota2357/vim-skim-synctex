@@ -122,7 +122,7 @@ export default class Application {
         case "PUT": {
           const data = await request.text();
           const line = parseInt(data.split(" ")[0]);
-          const file = data.split(" ")[1];
+          const file = data.split(" ").slice(1).join(" ");
           const currentBuf = await func.expand(this.denops, "%:p") as string;
           if (file == this.attachedBuf && file == currentBuf) {
             await func.cursor(this.denops, line, 1);
