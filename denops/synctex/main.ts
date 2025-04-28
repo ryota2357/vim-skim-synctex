@@ -1,7 +1,7 @@
-import { Denops, ensure, is } from "./lib/deps.ts";
+import { ensure, Entrypoint, is } from "./lib/deps.ts";
 import Application from "./lib/application.ts";
 
-export function main(denops: Denops): void {
+export const main: Entrypoint = (denops) => {
   const app = new Application(denops);
   denops.dispatcher = {
     async start(): Promise<void> {
@@ -57,4 +57,4 @@ export function main(denops: Denops): void {
       }
     },
   };
-}
+};
