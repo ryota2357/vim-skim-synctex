@@ -44,7 +44,7 @@ export default class Application {
 
   public async closeServer(): Promise<void> {
     if (this.server.isRunning) {
-      this.server.close();
+      await this.server.close();
       await this.denops.cmd(`autocmd! ${this.autocmdName}`);
       this.autocmdName = undefined;
       this.attachedBuf = undefined;

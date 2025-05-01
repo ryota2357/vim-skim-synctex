@@ -29,9 +29,9 @@ export default class SynctexSever {
     this.observer = func;
   }
 
-  public close() {
+  public async close() {
     if (this.server) {
-      this.server.shutdown();
+      await this.server.shutdown();
     }
     this.server = undefined;
     this.observer = undefined;
