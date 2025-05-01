@@ -37,7 +37,7 @@ export default class Application {
       this.attachListener();
       this.attachedBuf = await func.expand(this.denops, "%:p") as string;
       this.autocmdName = await this.createAutocmd();
-      this.server.serve(this.option.serverHost, this.option.serverPort);
+      await this.server.serve(this.option.serverHost, this.option.serverPort);
       await helper.echo(this.denops, "synctex start");
     }
   }
